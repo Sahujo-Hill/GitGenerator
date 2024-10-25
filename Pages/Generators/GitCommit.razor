@@ -1,0 +1,366 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+@page "/"
+
+<div class="container mx-auto" 
+     style="display: block; width: 60%">
+
+
+    <div id="TITLE_SECTION">
+
+        <h1 class="card-title fw-bold">Git Commit Generator</h1>
+        <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well formatted and conventional git commit</h5>
+
+    </div>
+
+    <div id="QUESTION_SECTION">
+
+        <h5 id="COMMIT_TYPE_QUESTION" 
+            class="mb-1">
+            What <strong>type</strong> of commit is this?
+            <img src="/Images/Tooltip.png" 
+                    type="image" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="right"
+                    data-bs-title="fix: patches a bug in your codebase.
+                                    feature: introduces a new feature to the codebase."
+                    style="width: 35px;" />
+        </h5>
+
+        <div id="COMMIT_TYPE" 
+                class="input-group">
+            <input  type="text" 
+                    class="form-control" 
+                    aria-label="type of commit free type with two buttons"
+                    @bind="commitType">
+        <button class="btn btn-outline-secondary" 
+                type="button" 
+                @onclick="@SetCommitTypeToFix">fix</button>
+
+        <button class="btn btn-outline-secondary" 
+                type="button" 
+                @onclick="@SetCommitTypeToFeature">feature</button>
+        </div>
+
+        <h5 id="COMMIT_SCOPE_QUESTION" 
+            class="mb-1 mt-3">
+            What is the <strong>scope</strong> of this commit?
+            <img src="/Images/Tooltip.png"
+                    type="image"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-title="The area of your codebase that is affected"
+                    style="width: 35px;" />
+        </h5>
+            
+        <div id="COMMIT_SCOPE" 
+                class="input-group">
+            <input type="text" 
+                    class="form-control" 
+                    aria-label="scope of commit free type with two buttons"
+                    @bind="commitScope" />
+        <button class="btn btn-outline-secondary" 
+                type="button" 
+                @onclick="@SetCommitScopeToClient">client</button>
+
+        <button class="btn btn-outline-secondary" 
+                type="button" 
+                @onclick="@SetCommitScopeToApi">api</button>                             
+                <button class="btn btn-outline-secondary" 
+                type="button" 
+                @onclick="@SetCommitScopeToShared">shared</button>
+        </div>
+
+        <h5 id="COMMIT_DESCRIPTION_QUESTION"
+            class="mb-1 mt-3">
+            One line desciption of your commit
+        </h5>
+
+        <div id="COMMIT_DESCRIPTION" 
+             class="input-group mt-3 mb-4">
+            <input class="form-control"
+                   @bind="commitDescription"/>
+            <button class="btn btn-primary"
+                    type="button"
+                    @onclick="@UpdateCommitMessage">Confirm</button>
+        </div>
+
+        <div id="COMMIT_BREAKING_CHANGE_QUERY_SECTION" 
+             class="mb-4 d-flex justify-content-between align-items-center">
+            <h5 id="COMMIT_BREAKING_CHANGE_QUESTION" 
+                class="mb-0 me-3">
+                Does this commit contain a <strong>breaking change</strong>?
+                <img src="/Images/Tooltip.png"
+                     type="image"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="right"
+                     data-bs-title="A change that could cause other components to fail"
+                     style="width: 35px;" />
+            </h5>
+
+            <div> @*This div is here so the buttons stay on the far right*@
+                <input type="radio"
+                       class="btn-check"
+                       name="options"
+                       id="BC_YES"
+                       autocomplete="off"
+                       checked="@breakingChange" />
+                <button class="btn @(breakingChange ? "btn-success" : "btn-secondary") me-3"
+                       for="BC_YES"
+                       @onclick="SetBreakingChangeToTrue">Yes</button>
+
+                <input type="radio"
+                       class="btn-check"
+                       name="options"
+                       id="BC_NO"
+                       autocomplete="off"
+                       checked="@(!breakingChange)" />
+                <button class="btn @(!breakingChange ? "btn-danger" : "btn-secondary")"
+                       for="BC_NO"
+                       @onclick="SetBreakingChangeToFalse">No</button>
+            </div>
+            
+        </div>
+
+        @if (breakingChange == true)
+        {
+            <div id="COMMIT_BREAKING_CHANGE_DESCRIPTION">
+                <h5 id="COMMIT_BREAKING_CHANGE_DESCRIPTION_QUESTION"
+                    class="mb-1 mt-3">
+                    One line desciption of your breaking change
+                </h5>
+
+                <div id="COMMIT_DESCRIPTION"
+                     class="input-group mt-3">
+                    <input class="form-control"
+                           @bind="breakingChangeDescription" />
+                    <button class="btn btn-primary"
+                            type="button"
+                            @onclick="@UpdateCommitMessage">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        }
+
+        <div id="COMMIT_EXTRA_FOOTERS_QUERY_SECTION"
+             class="mb-4 d-flex justify-content-between align-items-center mt-4">
+            <h5 id="COMMIT_BREAKING_CHANGE_QUESTION"
+                class="mb-0 me-3">
+                Would you like to add <strong>additional footers</strong>?
+                <img src="/Images/Tooltip.png"
+                     type="image"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="right"
+                     data-bs-title="E.g. Reviewers or references to work items"
+                     style="width: 35px;" />
+            </h5>
+
+            <div> @*This div is here so the buttons stay on the far right*@
+                <input type="radio"
+                       class="btn-check"
+                       name="options"
+                       id="BC_YES"
+                       autocomplete="off"
+                       checked="@extraFooters" />
+                <button class="btn @(extraFooters ? "btn-success" : "btn-secondary") me-3"
+                        for="BC_YES"
+                        @onclick="SetExtraFootersToTrue">
+                    Yes
+                </button>
+
+                <input type="radio"
+                       class="btn-check"
+                       name="options"
+                       id="BC_NO"
+                       autocomplete="off"
+                       checked="@(!extraFooters)" />
+                <button class="btn @(!extraFooters ? "btn-danger" : "btn-secondary")"
+                        for="BC_NO"
+                        @onclick="SetExtraFootersToFalse">
+                    No
+                </button>
+            </div>
+
+        </div>
+
+        @if (extraFooters == true)
+        {
+            <div id="COMMIT_EXTRA_FOOTERS_REVIEWED">
+                <h5 id="COMMIT_EXTRA_FOOTERS_REVIEWED_QUESTION"
+                    class="mb-1 mt-3">
+                    Who was this commit reviewed by?
+                </h5>
+
+                <div class="input-group mt-3">
+                    <input class="form-control"
+                           @bind="extraFooterReviewedBy" />
+                    <button class="btn btn-primary"
+                            type="button"
+                            @onclick="@UpdateCommitMessage">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+
+            <div id="COMMIT_EXTRA_FOOTERS_REFS">
+                <h5 id="COMMIT_EXTRA_FOOTERS_REFS_QUESTION"
+                    class="mb-1 mt-3">
+                    Please add references to work items here
+                </h5>
+
+                <div class="input-group mt-3">
+                    <input class="form-control"
+                           @bind="extraFooterReferences" />
+                    <button class="btn btn-primary"
+                            type="button"
+                            @onclick="@UpdateCommitMessage">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        }
+
+
+        <div id="OUTPUT_SECTION"
+             class="card mt-5">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">Your Commit</h3>
+                <button class="btn btn-dark" 
+                        type="button"
+                        style="float: right;"
+                        @onclick="CopyToClipboard">Copy</button>
+            </div>
+
+            <div class="card-body">
+
+                <div id="OUTPUT_COMMIT_LINE1">
+                    <pre>@commitMessage</pre>
+                </div>
+
+            </div>
+
+            <footer class="card-footer">
+                See <a target="_blank" href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a> for details.
+            </footer>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@code {
+    public string commitType { get; set; } = string.Empty;
+    public string commitScope { get; set; } = string.Empty;
+    public string commitDescription { get; set; } = string.Empty;
+    public bool breakingChange { get; set; } = false;
+    public string breakingChangeDescription { get; set; } = string.Empty;
+    public bool extraFooters { get; set; } = false;
+    public string extraFooterReviewedBy { get; set; } = string.Empty;
+    public string extraFooterReferences { get; set; } = string.Empty;
+
+    public string commitMessage { get; set; }
+
+    public void commitConstructor() => UpdateCommitMessage();
+
+    private string BuildCommitMessage()
+    {
+        string scopeSection = string.IsNullOrWhiteSpace(commitScope) ? "" : $"({commitScope})";
+        string breakingChangeMarker = breakingChange ? "!" : "";
+        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"BREAKING CHANGE: {breakingChangeDescription}";
+        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"Reviewed-by:{extraFooterReviewedBy}";
+        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"Ref: {extraFooterReferences}";
+
+        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}\n\n{breakingChangeSection}\n\n{extraFooterReviews}\n{extraFooterRefs}";
+    }
+
+    public void UpdateCommitMessage()
+    {
+        commitMessage = BuildCommitMessage();
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize tooltips
+            await JSRuntime.InvokeVoidAsync("initializeTooltips");
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", commitMessage);
+    }
+
+    private void SetCommitTypeToFix()
+    {
+        commitType = "fix";
+        UpdateCommitMessage();
+    }
+
+    private void SetCommitTypeToFeature()
+    {
+        commitType = "feat";
+        UpdateCommitMessage();
+    }
+
+    private void SetCommitScopeToClient()
+    {
+        commitScope = "client";
+        UpdateCommitMessage();
+    }
+
+    private void SetCommitScopeToApi()
+    {
+        commitScope = "api";
+        UpdateCommitMessage();
+    }
+
+    private void SetCommitScopeToShared()
+    {
+        commitScope = "sharedPackage";
+        UpdateCommitMessage();
+    }
+
+    private void SetBreakingChangeToTrue()
+    {
+        breakingChange = true;
+        UpdateCommitMessage();
+    }
+
+    private void SetBreakingChangeToFalse()
+    {
+        breakingChange = false;
+        ClearBreakingChange();
+        UpdateCommitMessage();
+    }
+
+    private void ClearBreakingChange()
+    {
+        breakingChangeDescription = string.Empty;
+    }    
+    private void SetExtraFootersToTrue()
+    {
+        extraFooters = true;
+        UpdateCommitMessage();
+    }
+
+    private void SetExtraFootersToFalse()
+    {
+        extraFooters = false;
+        ClearExtraFooters();
+        UpdateCommitMessage();
+    }
+
+    private void ClearExtraFooters()
+    {
+        extraFooterReviewedBy = string.Empty;
+        extraFooterReferences = string.Empty;
+    }
+}
