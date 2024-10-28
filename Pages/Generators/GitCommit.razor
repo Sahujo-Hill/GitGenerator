@@ -224,7 +224,7 @@
 
 
         <div id="OUTPUT_SECTION"
-             class="card mt-5">
+             class="card mt-5 mb-5">
 
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Your Commit</h3>
@@ -270,12 +270,15 @@
     private string BuildCommitMessage()
     {
         string scopeSection = string.IsNullOrWhiteSpace(commitScope) ? "" : $"({commitScope})";
-        string breakingChangeMarker = breakingChange ? "!" : "";
-        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"BREAKING CHANGE: {breakingChangeDescription}";
-        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"Reviewed-by:{extraFooterReviewedBy}";
-        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"Ref: {extraFooterReferences}";
 
-        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}\n\n{breakingChangeSection}\n\n{extraFooterReviews}\n{extraFooterRefs}";
+        string breakingChangeMarker = breakingChange ? "!" : "";
+        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"\n\nBREAKING CHANGE: {breakingChangeDescription}";
+
+        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"\nReviewed-by: {extraFooterReviewedBy}";
+        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"\nRef: {extraFooterReferences}";
+        string extraFooterSection = extraFooters ? $"\n{extraFooterReviews}{extraFooterRefs}" : "";
+
+        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}{breakingChangeSection}{extraFooterSection}";
     }
 
     public void UpdateCommitMessage()
