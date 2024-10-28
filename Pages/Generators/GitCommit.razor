@@ -222,7 +222,6 @@
             </div>
         }
 
-
         <div id="OUTPUT_SECTION"
              class="card mt-5 mb-5">
 
@@ -257,34 +256,16 @@
     public string commitType { get; set; } = string.Empty;
     public string commitScope { get; set; } = string.Empty;
     public string commitDescription { get; set; } = string.Empty;
+
     public bool breakingChange { get; set; } = false;
     public string breakingChangeDescription { get; set; } = string.Empty;
+
     public bool extraFooters { get; set; } = false;
     public string extraFooterReviewedBy { get; set; } = string.Empty;
     public string extraFooterReferences { get; set; } = string.Empty;
 
     public string commitMessage { get; set; }
 
-    public void commitConstructor() => UpdateCommitMessage();
-
-    private string BuildCommitMessage()
-    {
-        string scopeSection = string.IsNullOrWhiteSpace(commitScope) ? "" : $"({commitScope})";
-
-        string breakingChangeMarker = breakingChange ? "!" : "";
-        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"\n\nBREAKING CHANGE: {breakingChangeDescription}";
-
-        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"\nReviewed-by: {extraFooterReviewedBy}";
-        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"\nRef: {extraFooterReferences}";
-        string extraFooterSection = extraFooters ? $"\n{extraFooterReviews}{extraFooterRefs}" : "";
-
-        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}{breakingChangeSection}{extraFooterSection}";
-    }
-
-    public void UpdateCommitMessage()
-    {
-        commitMessage = BuildCommitMessage();
-    }
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -294,11 +275,6 @@
             // Initialize tooltips
             await JSRuntime.InvokeVoidAsync("initializeTooltips");
         }
-    }
-
-    private async Task CopyToClipboard()
-    {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", commitMessage);
     }
 
     private void SetCommitTypeToFix()
@@ -348,6 +324,7 @@
     {
         breakingChangeDescription = string.Empty;
     }    
+
     private void SetExtraFootersToTrue()
     {
         extraFooters = true;
@@ -365,5 +342,31 @@
     {
         extraFooterReviewedBy = string.Empty;
         extraFooterReferences = string.Empty;
+    }
+
+    public void commitConstructor() => UpdateCommitMessage();
+
+    public void UpdateCommitMessage()
+    {
+        commitMessage = BuildCommitMessage();
+    }
+
+    private string BuildCommitMessage()
+    {
+        string scopeSection = string.IsNullOrWhiteSpace(commitScope) ? "" : $"({commitScope})";
+
+        string breakingChangeMarker = breakingChange ? "!" : "";
+        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"\n\nBREAKING CHANGE: {breakingChangeDescription}";
+
+        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"\nReviewed-by: {extraFooterReviewedBy}";
+        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"\nRef: {extraFooterReferences}";
+        string extraFooterSection = extraFooters ? $"\n{extraFooterReviews}{extraFooterRefs}" : "";
+
+        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}{breakingChangeSection}{extraFooterSection}";
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", commitMessage);
     }
 }
