@@ -1,4 +1,6 @@
-﻿@page "/pullRequest"
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@page "/pullRequest"
 
 
 <div class="container mx-auto" 
@@ -6,14 +8,246 @@
 
     <div id="TITLE_SECTION">
 
-        <h1 class="card-title fw-bold">Pull Request Generator (Coming soon)</h1>
+        <h1 class="card-title fw-bold">Pull Request Generator (Under Construction)</h1>
         <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well informed Pull Request</h5>
 
     </div>
+
+    <div id="QUESTION_SECTION">
+
+        <div id="CHANGES_SECTION">
+            <h5 id="WHAT_CHANGES_HAVE_BEEN_MADE_QUESTION"
+                class="mb-1">
+                What changes have been made?
+            </h5>
+
+            @foreach (var change in Changes.Select((value, index) => new { value, index }))
+            {
+                <div class="change-item">
+                    <input type="text"
+                           @bind="Changes[change.index]"
+                           placeholder="Describe the change"
+                           class="form-control" />
+                    <button @onclick="() => RemoveChange(change.index)"
+                            class="btn btn-danger btn-sm">
+                        Remove
+                    </button>
+                </div>
+            }
+
+            <input type="text" @bind="newChange"
+                   placeholder="Enter a new change"
+                   class="form-control mb-2" />
+
+            <button @onclick="AddChange"
+                    class="btn btn-primary">
+                Add change
+            </button>
+        </div>      
+        
+        <div id="TEST_SECTION">
+            <h5 id="HOW_CAN_THE_CHANGES_BE_TESTED_QUESTION"
+                class="mb-1 mt-3">
+                How can the changes be tested?
+            </h5>
+
+            @foreach (var instruction in Test.Select((value, index) => new { value, index }))
+            {
+                <div class="instruction-item">
+                    <input type="text"
+                           @bind="Test[instruction.index]"
+                           placeholder="Enter an instruction"
+                           class="form-control" />
+                    <button @onclick="() => RemoveInstructionFromTest(instruction.index)"
+                            class="btn btn-danger btn-sm">
+                        Remove
+                    </button>
+                </div>
+            }
+
+            <input type="text" @bind="newInstruction"
+                   placeholder="Enter an instruction"
+                   class="form-control mb-2" />
+            <button @onclick="AddInstructionToTest"
+                    class="btn btn-primary">
+                Add instruction
+            </button>
+        </div>
+        
+        <div id="RELATED_PULL_REQUESTS_SECTION">
+            <h5 id="RELATED_PULL_REQUESTS_QUESTION"
+                class="mb-1 mt-3">
+                Related PRs
+            </h5>
+
+            @foreach (var relatedPR in RelatedPullRequests.Select((value, index) => new { value, index }))
+            {
+                <div class="instruction-item">
+                    <input type="text"
+                           @bind="RelatedPullRequests[relatedPR.index]"
+                           placeholder="Enter a related PR"
+                           class="form-control" />
+                    <button @onclick="() => RemoveRelatedPullRequest(relatedPR.index)"
+                            class="btn btn-danger btn-sm">
+                        Remove
+                    </button>
+                </div>
+            }
+
+            <input type="text" @bind="newRelatedPullRequest"
+                   placeholder="Enter a related PR"
+                   class="form-control mb-2" />
+            <button @onclick="AddRelatedPullRequest"
+                    class="btn btn-primary">
+                Add PR
+            </button>
+        </div>
+
+        <div id="CHECKLIST_SECTION">
+
+            <h5 id="CHECKLIST_QUESTION"
+                class="mb-1 mt-3">
+                Checklist
+            </h5>
+
+        </div>
+
+    </div>
+
+    <div id="OUTPUT_SECTION"
+         class="card mt-5 mb-5">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">Your Pull Request</h3>
+            <button class="btn btn-dark"
+                    type="button"
+                    style="float: right;"
+                    @onclick="CopyToClipboard">
+                Copy
+            </button>
+        </div>
+
+        <div class="card-body">
+
+         <div id="OUTPUT_PULL_REQUEST">
+                <pre>@pullRequest</pre>
+            </div>
+
+        </div>
+
+    </div>
+
+    <button class="btn btn-danger mb-5"
+            type="button"
+            style="float: right;"
+            @onclick="ClearForm">
+        Clear Form
+    </button>
 
  </div>
 
 
 @code {
+    public string pullRequest { get; set; }
+
+    private List<string> Changes { get; set; } = new List<string>();
+    private string newChange { get; set; } = string.Empty;
+    private void AddChange()
+    {
+        if (!string.IsNullOrWhiteSpace(newChange))
+        {
+            Changes.Add(newChange);
+            newChange = string.Empty;
+            UpdatePullRequest();
+        }
+    }
+    private void RemoveChange(int index)
+    {
+        if (index >= 0 && index < Changes.Count)
+        {
+            Changes.RemoveAt(index);
+            UpdatePullRequest();
+        }
+    }
+
+    private List<string> Test { get; set; } = new List<string>();
+    private string newInstruction { get; set; } = string.Empty;
+    private void AddInstructionToTest()
+    {
+        if (!string.IsNullOrWhiteSpace(newInstruction))
+        {
+            Test.Add(newInstruction);
+            newInstruction = string.Empty;
+            UpdatePullRequest();
+        }
+    }
+    private void RemoveInstructionFromTest(int index)
+    {
+        if (index >= 0 && index < Test.Count)
+        {
+            Test.RemoveAt(index);
+            UpdatePullRequest();
+        }
+    }
+
+    private List<string> RelatedPullRequests { get; set; } = new List<string>();
+    private string newRelatedPullRequest { get; set; } = string.Empty;
+    private void AddRelatedPullRequest()
+    {
+        if (!string.IsNullOrWhiteSpace(newRelatedPullRequest))
+        {
+            RelatedPullRequests.Add(newRelatedPullRequest);
+            newRelatedPullRequest = string.Empty;
+            UpdatePullRequest();
+        }
+    }
+    private void RemoveRelatedPullRequest(int index)
+    {
+        if (index >= 0 && index < RelatedPullRequests.Count)
+        {
+            RelatedPullRequests.RemoveAt(index);
+            UpdatePullRequest();
+        }
+    }
+
+    public void PullRequestConstructor() => UpdatePullRequest();
+
+    public void UpdatePullRequest()
+    {
+        pullRequest = BuildPullRequest();
+    }
+
+    private string BuildPullRequest()
+    {
+        string changesSection = string.Join("\n", Changes.Select(change => $"- {change}"));
+
+        string testSection = string.Join("\n", Test.Select((instruction, index) => $"{index + 1}. {instruction}"));
+
+        string relatedPullRequestSection = string.Join("\n", RelatedPullRequests.Select(pullRequest => $"- {pullRequest}"));
+
+        return $"##What changes have been made?\n{changesSection}\n\n##How can the changes be tested?\n{testSection}\n\n##Related PRs\n{relatedPullRequestSection}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize tooltips
+            await JSRuntime.InvokeVoidAsync("initializeTooltips");
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", pullRequest);
+    }
+
+    public void ClearForm()
+    {
+        pullRequest = string.Empty;
+        Changes.Clear();
+        Test.Clear();
+        RelatedPullRequests.Clear();
+    }
 
 }
