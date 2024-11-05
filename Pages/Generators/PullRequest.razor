@@ -48,6 +48,7 @@
                             style="width: 11.5px;" />
                 </button>
             </div>
+
         </div>      
         
         <div id="TEST_SECTION">
@@ -92,33 +93,118 @@
 
             @foreach (var relatedPR in RelatedPullRequests.Select((value, index) => new { value, index }))
             {
-                <div class="instruction-item">
+                <div class="instruction-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="RelatedPullRequests[relatedPR.index]"
                            placeholder="Enter a related PR"
                            class="form-control" />
                     <button @onclick="() => RemoveRelatedPullRequest(relatedPR.index)"
                             class="btn btn-danger btn-sm">
-                        Remove
+                        <img src="/Images/Remove.png"
+                             style="width: 20px;" />
                     </button>
                 </div>
             }
 
-            <input type="text" @bind="newRelatedPullRequest"
-                   placeholder="Enter a related PR"
-                   class="form-control mb-2" />
-            <button @onclick="AddRelatedPullRequest"
-                    class="btn btn-primary">
-                Add PR
-            </button>
+            <div class="input-group mt-3 mb-4">
+                <input type="text" @bind="newRelatedPullRequest"
+                       placeholder="Enter a related PR"
+                       class="form-control" />
+                <button @onclick="AddRelatedPullRequest"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                         style="width: 11.5px;" />
+                </button>
+            </div>
+
         </div>
 
         <div id="CHECKLIST_SECTION">
 
             <h5 id="CHECKLIST_QUESTION"
-                class="mb-1 mt-3">
+                class="mb-4 mt-3">
                 Checklist
             </h5>
+
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           type="checkbox" 
+                           value="" id="firstCheckbox">
+                    <label class="form-check-label" 
+                           for="firstCheckbox">
+                           Does the functionality meet <strong>all</strong> of the acceptance criteria?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           type="checkbox" 
+                           value="" 
+                           id="secondCheckbox">
+                    <label class="form-check-label" 
+                           for="secondCheckbox">
+                           Added or updated unit tests?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           type="checkbox" 
+                           value="" 
+                           id="thirdCheckbox">
+                    <label class="form-check-label" 
+                           for="thirdCheckbox">
+                           Added or updated end-to-end tests?
+                    </label>
+                </li>      
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           type="checkbox" 
+                           value="" 
+                           id="fifthCheckbox">
+                    <label class="form-check-label" 
+                           for="fifthCheckbox">
+                           Reviewed SonarQube issues?
+                    </label>
+                </li>
+                
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           type="checkbox" 
+                           value="" 
+                           id="sixthCheckbox">
+                    <label class="form-check-label" 
+                           for="sixthCheckbox">
+                           Updated relevant documentation?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           type="checkbox"
+                           value=""
+                           id="seventhCheckbox">
+                    <label class="form-check-label"
+                           for="seventhCheckbox">
+                        Addressed and/or considered <strong>security</strong> implications?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           type="checkbox"
+                           value=""
+                           id="eightCheckbox">
+                    <label class="form-check-label"
+                           for="eightCheckbox">
+                        Addressed and/or considered <strong>performance</strong> implications?
+                    </label>
+                </li>
+
+            </ul>
 
         </div>
 
