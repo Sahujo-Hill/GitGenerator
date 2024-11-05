@@ -23,26 +23,31 @@
 
             @foreach (var change in Changes.Select((value, index) => new { value, index }))
             {
-                <div class="change-item">
+                <div class="change-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="Changes[change.index]"
                            placeholder="Describe the change"
                            class="form-control" />
                     <button @onclick="() => RemoveChange(change.index)"
-                            class="btn btn-danger btn-sm">
-                        Remove
+                            class="btn btn-danger btn-sm"
+                            type="button">
+                            <img src="/Images/Remove.png"
+                                 style="width: 20px;"/>
                     </button>
                 </div>
             }
 
-            <input type="text" @bind="newChange"
-                   placeholder="Enter a new change"
-                   class="form-control mb-2" />
+            <div class="input-group mt-3 mb-4">
+                <input type="text" @bind="newChange"
+                        placeholder="Enter a new change"
+                        class="form-control" />
 
-            <button @onclick="AddChange"
-                    class="btn btn-primary">
-                Add change
-            </button>
+                <button @onclick="AddChange"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                            style="width: 11.5px;" />
+                </button>
+            </div>
         </div>      
         
         <div id="TEST_SECTION">
@@ -53,25 +58,30 @@
 
             @foreach (var instruction in Test.Select((value, index) => new { value, index }))
             {
-                <div class="instruction-item">
+                <div class="instruction-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="Test[instruction.index]"
                            placeholder="Enter an instruction"
                            class="form-control" />
                     <button @onclick="() => RemoveInstructionFromTest(instruction.index)"
                             class="btn btn-danger btn-sm">
-                        Remove
+                        <img src="/Images/Remove.png"
+                             style="width: 20px;" />
                     </button>
                 </div>
             }
 
-            <input type="text" @bind="newInstruction"
-                   placeholder="Enter an instruction"
-                   class="form-control mb-2" />
-            <button @onclick="AddInstructionToTest"
-                    class="btn btn-primary">
-                Add instruction
-            </button>
+            <div class="input-group mt-3 mb-4">
+                <input type="text" @bind="newInstruction"
+                       placeholder="Enter an instruction"
+                       class="form-control" />
+                <button @onclick="AddInstructionToTest"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                         style="width: 11.5px;" />
+                </button>
+            </div>
+
         </div>
         
         <div id="RELATED_PULL_REQUESTS_SECTION">
