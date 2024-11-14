@@ -1,5 +1,259 @@
-﻿<h3>PullRequest</h3>
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@page "/pullRequest"
 
-@code {
 
-}
+<div class="container mx-auto" 
+     style="display: block; width: 60%">
+
+    <div id="TITLE_SECTION">
+
+        <h1 class="card-title fw-bold">Pull Request Generator (Under Construction)</h1>
+        <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well informed Pull Request</h5>
+
+    </div>
+
+    <div id="QUESTION_SECTION">
+
+        <div id="CHANGES_SECTION">
+            <h5 id="WHAT_CHANGES_HAVE_BEEN_MADE_QUESTION"
+                class="mb-1">
+                What changes have been made?
+            </h5>
+
+            @foreach (var change in Changes.Select((value, index) => new { value, index }))
+            {
+                <div class="change-item input-group mt-3 mb-4">
+                    <input type="text"
+                           @bind="Changes[change.index]"
+                           placeholder="Describe the change"
+                           class="form-control" />
+                    <button @onclick="() => RemoveChange(change.index)"
+                            class="btn btn-danger btn-sm"
+                            type="button">
+                            <img src="/Images/Remove.png"
+                                 style="width: 20px;"/>
+                    </button>
+                </div>
+            }
+
+            <div class="input-group mt-3 mb-4">
+                <input type="text" @bind="newChange"
+                        placeholder="Enter a new change"
+                        class="form-control" />
+
+                <button @onclick="AddChange"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                            style="width: 11.5px;" />
+                </button>
+            </div>
+
+        </div>      
+        
+        <div id="TEST_SECTION">
+            <h5 id="HOW_CAN_THE_CHANGES_BE_TESTED_QUESTION"
+                class="mb-1 mt-3">
+                How can the changes be tested?
+            </h5>
+
+            @foreach (var instruction in Test.Select((value, index) => new { value, index }))
+            {
+                <div class="instruction-item input-group mt-3 mb-4">
+                    <input type="text"
+                           @bind="Test[instruction.index]"
+                           placeholder="Enter an instruction"
+                           class="form-control" />
+                    <button @onclick="() => RemoveInstructionFromTest(instruction.index)"
+                            class="btn btn-danger btn-sm">
+                        <img src="/Images/Remove.png"
+                             style="width: 20px;" />
+                    </button>
+                </div>
+            }
+
+            <div class="input-group mt-3 mb-4">
+                <input type="text" @bind="newInstruction"
+                       placeholder="Enter an instruction"
+                       class="form-control" />
+                <button @onclick="AddInstructionToTest"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                         style="width: 11.5px;" />
+                </button>
+            </div>
+
+        </div>
+        
+        <div id="RELATED_PULL_REQUESTS_SECTION">
+            <h5 id="RELATED_PULL_REQUESTS_QUESTION"
+                class="mb-1 mt-3">
+                Related PRs
+            </h5>
+
+            @foreach (var relatedPR in RelatedPullRequests.Select((value, index) => new { value, index }))
+            {
+                <div class="instruction-item input-group mt-3 mb-4">
+                    <input type="text"
+                           @bind="RelatedPullRequests[relatedPR.index]"
+                           placeholder="Enter a related PR"
+                           class="form-control" />
+                    <button @onclick="() => RemoveRelatedPullRequest(relatedPR.index)"
+                            class="btn btn-danger btn-sm">
+                        <img src="/Images/Remove.png"
+                             style="width: 20px;" />
+                    </button>
+                </div>
+            }
+
+            <div class="input-group mt-3 mb-4">
+                <input type="text" 
+                       @bind="newRelatedPullRequest"
+                       placeholder="Enter a related PR"
+                       class="form-control" />
+                <button @onclick="AddRelatedPullRequest"
+                        class="btn btn-primary">
+                    <img src="/Images/Add.png"
+                         style="width: 11.5px;" />
+                </button>
+            </div>
+
+        </div>
+
+        <div id="CHECKLIST_SECTION">
+
+            <h5 id="CHECKLIST_QUESTION"
+                class="mb-4 mt-3">
+                Checklist
+            </h5>
+
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           @bind="HasFunctionalityMetAcceptanceCriteria"
+                           type="checkbox" 
+                           value="" id="firstCheckbox">
+                    <label class="form-check-label" 
+                           for="firstCheckbox">
+                           Does the functionality meet <strong>all</strong> of the acceptance criteria?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           @bind="HasUpdatedUnitTests"
+                           type="checkbox" 
+                           value="" 
+                           id="secondCheckbox">
+                    <label class="form-check-label" 
+                           for="secondCheckbox">
+                           Added or updated unit tests?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           @bind="HasUpdatedEndToEndTests"
+                           type="checkbox" 
+                           value="" 
+                           id="thirdCheckbox">
+                    <label class="form-check-label" 
+                           for="thirdCheckbox">
+                           Added or updated end-to-end tests?
+                    </label>
+                </li>      
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" 
+                           @bind="HasReviewedSonarQubeIssues"
+                           type="checkbox" 
+                           value="" 
+                           id="fifthCheckbox">
+                    <label class="form-check-label" 
+                           for="fifthCheckbox">
+                           Reviewed SonarQube issues?
+                    </label>
+                </li>
+                
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           @bind="HasUpdatedDocumentation"
+                           type="checkbox" 
+                           value="" 
+                           id="sixthCheckbox">
+                    <label class="form-check-label" 
+                           for="sixthCheckbox">
+                           Updated relevant documentation?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           @bind="HasAddressedSecurityImplications"
+                           type="checkbox"
+                           value=""
+                           id="seventhCheckbox">
+                    <label class="form-check-label"
+                           for="seventhCheckbox">
+                        Addressed and/or considered <strong>security</strong> implications?
+                    </label>
+                </li>
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1"
+                           @bind="HasAddressedPerformanceImplications"
+                           type="checkbox"
+                           value=""
+                           id="eightCheckbox">
+                    <label class="form-check-label"
+                           for="eightCheckbox">
+                        Addressed and/or considered <strong>performance</strong> implications?
+                    </label>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div id="OUTPUT_SECTION"
+         class="card mt-5 mb-5">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">Your Pull Request</h3>
+            <button class="btn btn-dark"
+                    type="button"
+                    style="float: right;"
+                    @onclick="CopyToClipboard">
+                Copy
+            </button>
+        </div>
+
+        <div class="card-body">
+
+         <div id="OUTPUT_PULL_REQUEST">
+                <pre>@pullRequest</pre>
+            </div>
+
+        </div>
+
+    </div>
+
+    <button class="btn btn-danger mb-5"
+            type="button"
+            style="float: right;"
+            @onclick="ClearForm">
+        Clear Form
+    </button>
+
+ </div>
+
+@*
+    To do:
+
+    Add MarkDown => Plain text switch
+    Add Additional Notes section
+    Add inner templates such as basic testing instructions for Car/Home Factfind/Salesheet
+*@

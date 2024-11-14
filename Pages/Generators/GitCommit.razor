@@ -10,7 +10,7 @@
     <div id="TITLE_SECTION">
 
         <h1 class="card-title fw-bold">Git Commit Generator</h1>
-        <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well formatted and conventional git commit</h5>
+        <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well formatted and conventional Git Commit</h5>
 
     </div>
 
@@ -74,7 +74,7 @@
 
         <h5 id="COMMIT_DESCRIPTION_QUESTION"
             class="mb-1 mt-3">
-            One line desciption of your commit
+            One line description of your commit
         </h5>
 
         <div id="COMMIT_DESCRIPTION" 
@@ -128,7 +128,7 @@
             <div id="COMMIT_BREAKING_CHANGE_DESCRIPTION">
                 <h5 id="COMMIT_BREAKING_CHANGE_DESCRIPTION_QUESTION"
                     class="mb-1 mt-3">
-                    One line desciption of your breaking change
+                    One line description of your breaking change
                 </h5>
 
                 <div id="COMMIT_DESCRIPTION"
@@ -222,7 +222,6 @@
             </div>
         }
 
-
         <div id="OUTPUT_SECTION"
              class="card mt-5 mb-5">
 
@@ -248,122 +247,13 @@
 
         </div>
 
+        <button class="btn btn-danger mb-5"
+                type="button"
+                style="float: right;"
+                @onclick="ClearForm">
+            Clear Form
+        </button>
+
     </div>
 
 </div>
-
-
-@code {
-    public string commitType { get; set; } = string.Empty;
-    public string commitScope { get; set; } = string.Empty;
-    public string commitDescription { get; set; } = string.Empty;
-    public bool breakingChange { get; set; } = false;
-    public string breakingChangeDescription { get; set; } = string.Empty;
-    public bool extraFooters { get; set; } = false;
-    public string extraFooterReviewedBy { get; set; } = string.Empty;
-    public string extraFooterReferences { get; set; } = string.Empty;
-
-    public string commitMessage { get; set; }
-
-    public void commitConstructor() => UpdateCommitMessage();
-
-    private string BuildCommitMessage()
-    {
-        string scopeSection = string.IsNullOrWhiteSpace(commitScope) ? "" : $"({commitScope})";
-
-        string breakingChangeMarker = breakingChange ? "!" : "";
-        string breakingChangeSection = string.IsNullOrWhiteSpace(breakingChangeDescription) ? "" : $"\n\nBREAKING CHANGE: {breakingChangeDescription}";
-
-        string extraFooterReviews = string.IsNullOrWhiteSpace(extraFooterReviewedBy) ? "" : $"\nReviewed-by: {extraFooterReviewedBy}";
-        string extraFooterRefs = string.IsNullOrWhiteSpace(extraFooterReferences) ? "" : $"\nRef: {extraFooterReferences}";
-        string extraFooterSection = extraFooters ? $"\n{extraFooterReviews}{extraFooterRefs}" : "";
-
-        return $"{commitType}{scopeSection}{breakingChangeMarker}: {commitDescription}{breakingChangeSection}{extraFooterSection}";
-    }
-
-    public void UpdateCommitMessage()
-    {
-        commitMessage = BuildCommitMessage();
-    }
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Initialize tooltips
-            await JSRuntime.InvokeVoidAsync("initializeTooltips");
-        }
-    }
-
-    private async Task CopyToClipboard()
-    {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", commitMessage);
-    }
-
-    private void SetCommitTypeToFix()
-    {
-        commitType = "fix";
-        UpdateCommitMessage();
-    }
-
-    private void SetCommitTypeToFeature()
-    {
-        commitType = "feat";
-        UpdateCommitMessage();
-    }
-
-    private void SetCommitScopeToClient()
-    {
-        commitScope = "client";
-        UpdateCommitMessage();
-    }
-
-    private void SetCommitScopeToApi()
-    {
-        commitScope = "api";
-        UpdateCommitMessage();
-    }
-
-    private void SetCommitScopeToShared()
-    {
-        commitScope = "sharedPackage";
-        UpdateCommitMessage();
-    }
-
-    private void SetBreakingChangeToTrue()
-    {
-        breakingChange = true;
-        UpdateCommitMessage();
-    }
-
-    private void SetBreakingChangeToFalse()
-    {
-        breakingChange = false;
-        ClearBreakingChange();
-        UpdateCommitMessage();
-    }
-
-    private void ClearBreakingChange()
-    {
-        breakingChangeDescription = string.Empty;
-    }    
-    private void SetExtraFootersToTrue()
-    {
-        extraFooters = true;
-        UpdateCommitMessage();
-    }
-
-    private void SetExtraFootersToFalse()
-    {
-        extraFooters = false;
-        ClearExtraFooters();
-        UpdateCommitMessage();
-    }
-
-    private void ClearExtraFooters()
-    {
-        extraFooterReviewedBy = string.Empty;
-        extraFooterReferences = string.Empty;
-    }
-}
