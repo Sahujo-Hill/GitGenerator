@@ -107,7 +107,8 @@
             }
 
             <div class="input-group mt-3 mb-4">
-                <input type="text" @bind="newRelatedPullRequest"
+                <input type="text" 
+                       @bind="newRelatedPullRequest"
                        placeholder="Enter a related PR"
                        class="form-control" />
                 <button @onclick="AddRelatedPullRequest"
@@ -130,6 +131,7 @@
 
                 <li class="list-group-item">
                     <input class="form-check-input me-1" 
+                           @bind="HasFunctionalityMetAcceptanceCriteria"
                            type="checkbox" 
                            value="" id="firstCheckbox">
                     <label class="form-check-label" 
@@ -139,7 +141,8 @@
                 </li>
 
                 <li class="list-group-item">
-                    <input class="form-check-input me-1" 
+                    <input class="form-check-input me-1"
+                           @bind="HasUpdatedUnitTests"
                            type="checkbox" 
                            value="" 
                            id="secondCheckbox">
@@ -151,6 +154,7 @@
 
                 <li class="list-group-item">
                     <input class="form-check-input me-1" 
+                           @bind="HasUpdatedEndToEndTests"
                            type="checkbox" 
                            value="" 
                            id="thirdCheckbox">
@@ -162,6 +166,7 @@
 
                 <li class="list-group-item">
                     <input class="form-check-input me-1" 
+                           @bind="HasReviewedSonarQubeIssues"
                            type="checkbox" 
                            value="" 
                            id="fifthCheckbox">
@@ -172,7 +177,8 @@
                 </li>
                 
                 <li class="list-group-item">
-                    <input class="form-check-input me-1" 
+                    <input class="form-check-input me-1"
+                           @bind="HasUpdatedDocumentation"
                            type="checkbox" 
                            value="" 
                            id="sixthCheckbox">
@@ -184,6 +190,7 @@
 
                 <li class="list-group-item">
                     <input class="form-check-input me-1"
+                           @bind="HasAddressedSecurityImplications"
                            type="checkbox"
                            value=""
                            id="seventhCheckbox">
@@ -195,6 +202,7 @@
 
                 <li class="list-group-item">
                     <input class="form-check-input me-1"
+                           @bind="HasAddressedPerformanceImplications"
                            type="checkbox"
                            value=""
                            id="eightCheckbox">
@@ -249,108 +257,3 @@
     Add Additional Notes section
     Add inner templates such as basic testing instructions for Car/Home Factfind/Salesheet
 *@
-
-@code {
-    public string pullRequest { get; set; }
-
-    private List<string> Changes { get; set; } = new List<string>();
-    private string newChange { get; set; } = string.Empty;
-    private void AddChange()
-    {
-        if (!string.IsNullOrWhiteSpace(newChange))
-        {
-            Changes.Add(newChange);
-            newChange = string.Empty;
-            UpdatePullRequest();
-        }
-    }
-    private void RemoveChange(int index)
-    {
-        if (index >= 0 && index < Changes.Count)
-        {
-            Changes.RemoveAt(index);
-            UpdatePullRequest();
-        }
-    }
-
-    private List<string> Test { get; set; } = new List<string>();
-    private string newInstruction { get; set; } = string.Empty;
-    private void AddInstructionToTest()
-    {
-        if (!string.IsNullOrWhiteSpace(newInstruction))
-        {
-            Test.Add(newInstruction);
-            newInstruction = string.Empty;
-            UpdatePullRequest();
-        }
-    }
-    private void RemoveInstructionFromTest(int index)
-    {
-        if (index >= 0 && index < Test.Count)
-        {
-            Test.RemoveAt(index);
-            UpdatePullRequest();
-        }
-    }
-
-    private List<string> RelatedPullRequests { get; set; } = new List<string>();
-    private string newRelatedPullRequest { get; set; } = string.Empty;
-    private void AddRelatedPullRequest()
-    {
-        if (!string.IsNullOrWhiteSpace(newRelatedPullRequest))
-        {
-            RelatedPullRequests.Add(newRelatedPullRequest);
-            newRelatedPullRequest = string.Empty;
-            UpdatePullRequest();
-        }
-    }
-    private void RemoveRelatedPullRequest(int index)
-    {
-        if (index >= 0 && index < RelatedPullRequests.Count)
-        {
-            RelatedPullRequests.RemoveAt(index);
-            UpdatePullRequest();
-        }
-    }
-
-    public void PullRequestConstructor() => UpdatePullRequest();
-
-    public void UpdatePullRequest()
-    {
-        pullRequest = BuildPullRequest();
-    }
-
-    private string BuildPullRequest()
-    {
-        string changesSection = string.Join("\n", Changes.Select(change => $"- {change}"));
-
-        string testSection = string.Join("\n", Test.Select((instruction, index) => $"{index + 1}. {instruction}"));
-
-        string relatedPullRequestSection = string.Join("\n", RelatedPullRequests.Select(pullRequest => $"- {pullRequest}"));
-
-        return $"##What changes have been made?\n{changesSection}\n\n##How can the changes be tested?\n{testSection}\n\n##Related PRs\n{relatedPullRequestSection}";
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Initialize tooltips
-            await JSRuntime.InvokeVoidAsync("initializeTooltips");
-        }
-    }
-
-    private async Task CopyToClipboard()
-    {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", pullRequest);
-    }
-
-    public void ClearForm()
-    {
-        pullRequest = string.Empty;
-        Changes.Clear();
-        Test.Clear();
-        RelatedPullRequests.Clear();
-    }
-
-}
