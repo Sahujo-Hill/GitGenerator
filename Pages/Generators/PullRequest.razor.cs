@@ -7,12 +7,60 @@ public partial class PullRequest
     public string pullRequest { get; set; }
 
     public bool HasFunctionalityMetAcceptanceCriteria { get; set; }
+    public string CheckHasFunctionalityMetAcceptanceCriteria()
+    {
+        return !HasFunctionalityMetAcceptanceCriteria
+            ? "- [ ] Does the functionality meet all of the acceptance criteria?"
+            : "- [x] Does the functionality meet all of the acceptance criteria?";
+    }
+
     public bool HasUpdatedUnitTests { get; set; }
+    public string CheckHasUpdatedUnitTests()
+    {
+        return !HasUpdatedUnitTests
+            ? "- [ ] Has there been an update or addition of any unit tests?"
+            : "- [x] Has there been an update or addition of any unit tests?";
+    }
+
     public bool HasUpdatedEndToEndTests { get; set; }
+    public string CheckHasUpdatedEndToEndTests()
+    {
+        return !HasUpdatedEndToEndTests
+            ? "- [ ] Has there been an update or addition of any end-to-end tests?"
+            : "- [x] Has there been an update or addition of any end-to-end tests?";
+    }
+
     public bool HasReviewedSonarQubeIssues { get; set; }
+    public string CheckHasReviewedSonarQubeIssues()
+    {
+        return !HasReviewedSonarQubeIssues
+            ? "- [ ] Have any SonarQube issues been reviewed or resolved?"
+            : "- [x] Have any SonarQube issues been reviewed or resolved?";
+    }
+
     public bool HasUpdatedDocumentation { get; set; }
+    public string CheckHasUpdatedDocumentation()
+    {
+        return !HasUpdatedDocumentation
+            ? "- [ ] Has there been an update or addition of any documentation?"
+            : "- [x] Has there been an update or addition of any documentation?";
+    }
+
     public bool HasAddressedSecurityImplications { get; set; }
+    public string CheckHasAddressedSecurityImplications()
+    {
+        return !HasAddressedSecurityImplications
+            ? "- [ ] Have the security implications of this request been addressed or considered?"
+            : "- [x] Have the security implications of this request been addressed or considered?";
+    }
+
     public bool HasAddressedPerformanceImplications { get; set; }
+    public string CheckHasAddressedPerformanceImplications()
+    {
+        return !HasAddressedPerformanceImplications
+            ? "- [ ] Have the performance implications of this request been addressed or considered?"
+            : "- [x] Have the performance implications of this request been addressed or considered?";
+    }
 
     private List<string> Changes { get; set; } = new List<string>();
     private string newChange { get; set; } = string.Empty;
@@ -90,7 +138,13 @@ public partial class PullRequest
 
         string relatedPullRequestSection = string.Join("\n", RelatedPullRequests.Select(pullRequest => $"- {pullRequest}"));
 
-        string checklistSection = string.Empty; //To do: add mapping here
+        string checklistSection = $"{CheckHasFunctionalityMetAcceptanceCriteria()}\n" +
+                                  $"{CheckHasUpdatedUnitTests()}\n" +
+                                  $"{CheckHasUpdatedEndToEndTests()}\n" +
+                                  $"{CheckHasReviewedSonarQubeIssues()}\n" +
+                                  $"{CheckHasUpdatedDocumentation()}\n" +
+                                  $"{CheckHasAddressedSecurityImplications()}\n" +
+                                  $"{CheckHasAddressedPerformanceImplications()}\n";
 
         return $"##What changes have been made?\n" +
                $"{changesSection}\n\n" +
