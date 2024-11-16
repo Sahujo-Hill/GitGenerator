@@ -122,6 +122,7 @@ public partial class PullRequest
         }
     }
 
+    private string? AdditionalNotes { get; set; }
 
     public void PullRequestConstructor() => UpdatePullRequest();
 
@@ -154,7 +155,9 @@ public partial class PullRequest
                $"{relatedPullRequestSection}\n\n" +
                $"##Checklist\n" +
                $"Before submitting this PR for review, I have:\n" +
-               $"{checklistSection}";
+               $"{checklistSection}\n\n" +
+               $"Additional Notes:\n" +
+               $"{AdditionalNotes}";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
