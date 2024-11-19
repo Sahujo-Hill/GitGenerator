@@ -8,7 +8,7 @@
 
     <div id="TITLE_SECTION">
 
-        <h1 class="card-title fw-bold">Pull Request Generator (Under Construction)</h1>
+        <h1 class="card-title fw-bold">Pull Request Generator</h1>
         <h5 class="card-subtitle mb-5 opacity-50">Use this form to generate a well informed Pull Request</h5>
 
     </div>
@@ -26,7 +26,7 @@
                 <div class="change-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="Changes[change.index]"
-                           placeholder="Describe the change"
+                           placeholder="E.g. Added new properties to model"
                            class="form-control" />
                     <button @onclick="() => RemoveChange(change.index)"
                             class="btn btn-danger btn-sm"
@@ -39,7 +39,7 @@
 
             <div class="input-group mt-3 mb-4">
                 <input type="text" @bind="newChange"
-                        placeholder="Enter a new change"
+                       placeholder="E.g. Added new properties to model"
                         class="form-control" />
 
                 <button @onclick="AddChange"
@@ -62,7 +62,7 @@
                 <div class="instruction-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="Test[instruction.index]"
-                           placeholder="Enter an instruction"
+                           placeholder="E.g. Open page 1 and fill in question 3"
                            class="form-control" />
                     <button @onclick="() => RemoveInstructionFromTest(instruction.index)"
                             class="btn btn-danger btn-sm">
@@ -74,7 +74,7 @@
 
             <div class="input-group mt-3 mb-4">
                 <input type="text" @bind="newInstruction"
-                       placeholder="Enter an instruction"
+                       placeholder="E.g. Open page 1 and fill in question 3"
                        class="form-control" />
                 <button @onclick="AddInstructionToTest"
                         class="btn btn-primary">
@@ -96,7 +96,7 @@
                 <div class="instruction-item input-group mt-3 mb-4">
                     <input type="text"
                            @bind="RelatedPullRequests[relatedPR.index]"
-                           placeholder="Enter a related PR"
+                           placeholder="E.g. #7902 or insert URL"
                            class="form-control" />
                     <button @onclick="() => RemoveRelatedPullRequest(relatedPR.index)"
                             class="btn btn-danger btn-sm">
@@ -109,7 +109,7 @@
             <div class="input-group mt-3 mb-4">
                 <input type="text" 
                        @bind="newRelatedPullRequest"
-                       placeholder="Enter a related PR"
+                       placeholder="E.g. #7902 or insert URL"
                        class="form-control" />
                 <button @onclick="AddRelatedPullRequest"
                         class="btn btn-primary">
@@ -136,7 +136,7 @@
                            value="" id="firstCheckbox">
                     <label class="form-check-label" 
                            for="firstCheckbox">
-                           Does the functionality meet <strong>all</strong> of the acceptance criteria?
+                           Functionality meets <strong>all</strong> of the acceptance criteria
                     </label>
                 </li>
 
@@ -148,7 +148,7 @@
                            id="secondCheckbox">
                     <label class="form-check-label" 
                            for="secondCheckbox">
-                           Added or updated unit tests?
+                           Added or updated unit tests
                     </label>
                 </li>
 
@@ -160,7 +160,7 @@
                            id="thirdCheckbox">
                     <label class="form-check-label" 
                            for="thirdCheckbox">
-                           Added or updated end-to-end tests?
+                           Added or updated end-to-end tests
                     </label>
                 </li>      
 
@@ -172,7 +172,7 @@
                            id="fifthCheckbox">
                     <label class="form-check-label" 
                            for="fifthCheckbox">
-                           Reviewed SonarQube issues?
+                           Reviewed SonarQube issues
                     </label>
                 </li>
                 
@@ -184,7 +184,7 @@
                            id="sixthCheckbox">
                     <label class="form-check-label" 
                            for="sixthCheckbox">
-                           Updated relevant documentation?
+                           Updated relevant documentation
                     </label>
                 </li>
 
@@ -196,7 +196,7 @@
                            id="seventhCheckbox">
                     <label class="form-check-label"
                            for="seventhCheckbox">
-                        Addressed and/or considered <strong>security</strong> implications?
+                        Addressed and/or considered <strong>security</strong> implications
                     </label>
                 </li>
 
@@ -208,7 +208,7 @@
                            id="eightCheckbox">
                     <label class="form-check-label"
                            for="eightCheckbox">
-                        Addressed and/or considered <strong>performance</strong> implications?
+                        Addressed and/or considered <strong>performance</strong> implications
                     </label>
                 </li>
 
@@ -274,6 +274,5 @@
     To do:
 
     Add MarkDown => Plain text switch
-    Add Additional Notes section
     Add inner templates such as basic testing instructions for Car/Home Factfind/Salesheet
 *@
