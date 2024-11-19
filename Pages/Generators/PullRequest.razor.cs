@@ -10,56 +10,56 @@ public partial class PullRequest
     public string CheckHasFunctionalityMetAcceptanceCriteria()
     {
         return !HasFunctionalityMetAcceptanceCriteria
-            ? "- [ ] Does the functionality meet all of the acceptance criteria?"
-            : "- [x] Does the functionality meet all of the acceptance criteria?";
+            ? "- [ ] Checked the functionality meets all of the acceptance criteria"
+            : "- [x] Checked the functionality meets all of the acceptance criteria";
     }
 
     public bool HasUpdatedUnitTests { get; set; }
     public string CheckHasUpdatedUnitTests()
     {
         return !HasUpdatedUnitTests
-            ? "- [ ] Has there been an update or addition of any unit tests?"
-            : "- [x] Has there been an update or addition of any unit tests?";
+            ? "- [ ] Updated or added unit tests"
+            : "- [x] Updated or added unit tests";
     }
 
     public bool HasUpdatedEndToEndTests { get; set; }
     public string CheckHasUpdatedEndToEndTests()
     {
         return !HasUpdatedEndToEndTests
-            ? "- [ ] Has there been an update or addition of any end-to-end tests?"
-            : "- [x] Has there been an update or addition of any end-to-end tests?";
+            ? "- [ ] Updated or added end-to-end tests"
+            : "- [x] Updated or added end-to-end tests";
     }
 
     public bool HasReviewedSonarQubeIssues { get; set; }
     public string CheckHasReviewedSonarQubeIssues()
     {
         return !HasReviewedSonarQubeIssues
-            ? "- [ ] Have any SonarQube issues been reviewed or resolved?"
-            : "- [x] Have any SonarQube issues been reviewed or resolved?";
+            ? "- [ ] Reviewed or resolved any SonarQube issues"
+            : "- [x] Reviewed or resolved any SonarQube issues";
     }
 
     public bool HasUpdatedDocumentation { get; set; }
     public string CheckHasUpdatedDocumentation()
     {
         return !HasUpdatedDocumentation
-            ? "- [ ] Has there been an update or addition of any documentation?"
-            : "- [x] Has there been an update or addition of any documentation?";
+            ? "- [ ] Updated or added documentation"
+            : "- [x] Updated or added documentation";
     }
 
     public bool HasAddressedSecurityImplications { get; set; }
     public string CheckHasAddressedSecurityImplications()
     {
         return !HasAddressedSecurityImplications
-            ? "- [ ] Have the security implications of this request been addressed or considered?"
-            : "- [x] Have the security implications of this request been addressed or considered?";
+            ? "- [ ] Addressed or considered the security implications of this request"
+            : "- [x] Addressed or considered the security implications of this request";
     }
 
     public bool HasAddressedPerformanceImplications { get; set; }
     public string CheckHasAddressedPerformanceImplications()
     {
         return !HasAddressedPerformanceImplications
-            ? "- [ ] Have the performance implications of this request been addressed or considered?"
-            : "- [x] Have the performance implications of this request been addressed or considered?";
+            ? "- [ ] Addressed or considered the performance implications of this request"
+            : "- [x] Addressed or considered the performance implications of this request";
     }
 
     private List<string> Changes { get; set; } = new List<string>();
